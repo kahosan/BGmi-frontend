@@ -20,7 +20,7 @@ export const useBangumi = () => {
       console.error(err);
       toast({
         title: '获取番剧数据失败',
-        description: '请检查网络连接或配置',
+        description: err?.detail ?? '请检查网络连接或配置',
         status: 'error',
         duration: 3000,
         position: 'top-right',

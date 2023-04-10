@@ -25,12 +25,12 @@ export interface InitialData {
   bangumiName: string;
   completedEpisodes: number;
   filterOptions: {
-    include: string;
-    exclude: string;
+    include: string[];
+    exclude: string[];
     regex: string;
   };
   subtitleGroups: string[];
-  follwedSubtitleGroups: string[];
+  selectedSubtitleGroups: string[];
 }
 
 interface Props {
@@ -43,7 +43,7 @@ interface Props {
 
 export default function SubscribeForm({ isOpen, onClose, initialData, setSyncData, syncData }: Props) {
   const [formData, setFormData] = useState<InitialData>();
-  const { handleSaveFilter, handleSaveMark, handleUnSubscribe } = useSubscribeAction();
+  const { handleSaveFilter, handleSaveMark, handleUnSubscribe } = useSubscribeAction(formData?.bangumiName ?? '');
 
   if (initialData && !formData) setFormData(initialData);
 
@@ -57,10 +57,10 @@ export default function SubscribeForm({ isOpen, onClose, initialData, setSyncDat
   }, [formData]);
 
   const selectDefaultValue = useMemo(() => {
-    return formData?.follwedSubtitleGroups.map(follwedSubtileGroup => {
+    return formData?.selectedSubtitleGroups.map(selectedSubtileGroup => {
       return {
-        label: follwedSubtileGroup,
-        value: follwedSubtileGroup,
+        label: selectedSubtileGroup,
+        value: selectedSubtileGroup,
       };
     });
   }, [formData]);
@@ -76,15 +76,14 @@ export default function SubscribeForm({ isOpen, onClose, initialData, setSyncDat
     }
 
     await handleSaveFilter.trigger({
-      name: formData.bangumiName,
       include: formData.filterOptions.include,
       exclude: formData.filterOptions.exclude,
       regex: formData.filterOptions.regex,
-      subtitle: formData.follwedSubtitleGroups.join(','),
+      selected_subtitle: formData.selectedSubtitleGroups,
     });
 
     await handleSaveMark.trigger({
-      name: formData.bangumiName,
+      bangumi: formData.bangumiName,
       episode: formData.completedEpisodes,
     });
 
@@ -124,10 +123,11 @@ export default function SubscribeForm({ isOpen, onClose, initialData, setSyncDat
                       onChange={e =>
                         setFormData({
                           ...formData,
-                          filterOptions: { ...formData.filterOptions, include: e.target.value },
+                          filterOptions: { ...formData.filterOptions, include: e.target.value.split(' ') },
                         })
                       }
-                      defaultValue={formData.filterOptions.include}
+                      defaultValue={formData.filterOptions.include.join(' ')}
+                      placeholder="空格分隔"
                       type="text"
                     />
                   </FormControl>
@@ -137,10 +137,11 @@ export default function SubscribeForm({ isOpen, onClose, initialData, setSyncDat
                       onChange={e =>
                         setFormData({
                           ...formData,
-                          filterOptions: { ...formData.filterOptions, exclude: e.target.value },
+                          filterOptions: { ...formData.filterOptions, exclude: e.target.value.split(' ') },
                         })
                       }
-                      defaultValue={formData.filterOptions.exclude}
+                      defaultValue={formData.filterOptions.exclude.join(' ')}
+                      placeholder="空格分隔"
                       type="text"
                     />
                   </FormControl>
@@ -170,7 +171,7 @@ export default function SubscribeForm({ isOpen, onClose, initialData, setSyncDat
                     placeholder=""
                     options={selectOptions}
                     defaultValue={selectDefaultValue}
-                    onChange={e => setFormData({ ...formData, follwedSubtitleGroups: e.map(item => item.value) })}
+                    onChange={e => setFormData({ ...formData, selectedSubtitleGroups: e.map(item => item.value) })}
                     closeMenuOnSelect={false}
                   />
                 </FormControl>

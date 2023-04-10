@@ -1,6 +1,8 @@
+import type { SaveFilterBody } from '~/types/subscribe';
+
 export const fetcher = async <T>([key, authToken]: [string, string?], options: ResponseInit): Promise<T> => {
   const headers = new Headers();
-  if (authToken) headers.append('bgmi-token', authToken);
+  if (authToken) headers.append('authorization', `Bearer ${authToken}`);
 
   // request timeout
   const controller = new AbortController();
@@ -10,23 +12,28 @@ export const fetcher = async <T>([key, authToken]: [string, string?], options: R
 
   const res = await fetch(`.${key}`, { signal: controller.signal, headers, ...options });
 
-  if (!res.ok) throw new Error(`fetcher error ${res.status}`);
+  if (!res.ok) throw await res.json();
 
   clearTimeout(timeoutId);
   return res.json();
 };
 
+interface FetcherExtraArg {
+  body?: SaveFilterBody | { bangumi: string; episode?: number };
+  method?: string;
+}
+
 export const fetcherWithMutation = async <T>(
   [key, authToken]: [string, string?],
-  { arg }: { arg: Record<string, any> }
+  { arg }: { arg: FetcherExtraArg }
 ): Promise<T> => {
-  const headers = new Headers();
-  if (authToken) headers.append('bgmi-token', authToken);
+  const headers = new Headers({ 'Content-Type': 'application/json' });
+  if (authToken) headers.append('authorization', `Bearer ${authToken}`);
 
   const options: RequestInit = {
     headers,
-    method: 'POST',
-    body: JSON.stringify(arg),
+    method: arg.method ?? 'POST',
+    body: JSON.stringify(arg.body),
   };
 
   // request timeout
@@ -37,7 +44,7 @@ export const fetcherWithMutation = async <T>(
 
   const res = await fetch(`.${key}`, { signal: controller.signal, ...options });
 
-  if (!res.ok) throw new Error(`fetcher error ${res.status}`);
+  if (!res.ok) throw await res.json();
 
   clearTimeout(timeoutId);
   return res.json();

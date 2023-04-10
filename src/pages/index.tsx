@@ -95,7 +95,7 @@ export default function Bangumi() {
   return (
     <Grid templateColumns="repeat(auto-fill, minmax(20rem, 1fr))" gap={6}>
       {data.data.map(bangumi => (
-        <GridItem key={bangumi.id}>
+        <GridItem key={bangumi.bangumi_name}>
           <PlayerCard bangumiData={bangumi} />
         </GridItem>
       ))}

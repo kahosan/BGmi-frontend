@@ -1,25 +1,14 @@
 export interface FetchFilterResp {
-  version: string;
-  latest_version: string;
-  frontend_version: string;
-  status: string;
-  lang: string;
-  danmaku_api: string;
-  data: {
-    name: string;
-    subtitle_group: string[];
-    followed: string[];
-    include: string | null;
-    exclude: string | null;
-    regex: string | null;
-  };
-  message: string;
+  available_subtitle: string[];
+  selected_subtitle: string[];
+  include: string[];
+  exclude: string[];
+  regex: '';
 }
 
 export interface SaveFilterBody {
-  name: string;
-  include: string | null;
-  exclude: string | null;
+  include: string[] | null;
+  exclude: string[] | null;
   regex: string | null;
-  subtitle: string | null;
+  selected_subtitle: string[] | null;
 }

@@ -9,7 +9,7 @@ import { useColorMode } from '~/hooks/use-color-mode';
 import CalendarTab from '~/components/calendar-tab';
 import SubscribePanel from '~/components/subscribe-panel';
 
-import type { Calendar, CalendarData } from '~/types/calendar';
+import type { Calendar } from '~/types/calendar';
 import Auth from '~/components/auth';
 
 interface FilterOptionsState {
@@ -101,13 +101,13 @@ export default function Subscribe() {
 
     // deep clone
     const sortData = window.structuredClone(data) as Calendar;
-    Object.values(sortData.data).forEach(week => {
+    Object.values(sortData).forEach(week => {
       week.sort(b => (!b.status ? 1 : -1));
     });
 
-    const filterData = sortData.data;
-    for (const [week, weekData] of Object.entries(sortData.data)) {
-      filterData[week as keyof CalendarData] = weekData.filter(bangumi => {
+    const filterData = sortData;
+    for (const [week, weekData] of Object.entries(sortData)) {
+      filterData[week as keyof Calendar] = weekData.filter(bangumi => {
         if (state.subscribed) return bangumi.status;
 
         if (state.unSubscribed) return !bangumi.status;

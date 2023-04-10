@@ -15,7 +15,7 @@ interface Props {
 
 export interface SyncData {
   status: boolean;
-  episode: number | undefined;
+  episode: number | null;
 }
 
 export default function SubscribeCard({ bangumi }: Props) {
@@ -28,7 +28,7 @@ export default function SubscribeCard({ bangumi }: Props) {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [initialData, setInitialData] = useState<InitialData>();
 
-  const { handleFetchFilter, handleSubscribe } = useSubscribeAction();
+  const { handleFetchFilter, handleSubscribe } = useSubscribeAction(bangumi.name);
 
   const [syncData, setSyncData] = useState<SyncData>({
     status: !!bangumi.status,
@@ -42,25 +42,25 @@ export default function SubscribeCard({ bangumi }: Props) {
      * 先进行订阅操作才能请求 `filter` 获取字幕组数据, 已订阅不操作
      * */
     if (!status) {
-      await handleSubscribe(name, 0);
+      await handleSubscribe(name);
       setSyncData({
         ...syncData,
         status: true,
       });
     }
 
-    const data = await handleFetchFilter(name);
+    const data = await handleFetchFilter();
 
     setInitialData({
       bangumiName: name,
       completedEpisodes: syncData.episode ?? ep,
       filterOptions: {
-        include: data?.data.include ?? '',
-        exclude: data?.data.exclude ?? '',
-        regex: data?.data.regex ?? '',
+        include: data.include ?? [],
+        exclude: data.exclude ?? [],
+        regex: data.regex ?? '',
       },
-      subtitleGroups: data?.data.subtitle_group ?? [],
-      follwedSubtitleGroups: data?.data.followed ?? [],
+      subtitleGroups: data.available_subtitle ?? [],
+      selectedSubtitleGroups: data.selected_subtitle ?? [],
     });
   };
 
@@ -104,7 +104,8 @@ export default function SubscribeCard({ bangumi }: Props) {
             <Image
               h="sm"
               w="full"
-              src={`./bangumi/cover/${bangumi.cover}`}
+              // TODO 路径之后会改
+              src={bangumi.cover}
               alt="anime cover"
               objectFit="cover"
               backgroundPosition="50% 50%"

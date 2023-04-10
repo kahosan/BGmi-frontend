@@ -26,7 +26,8 @@ function CalendarPanel({ bangumi }: { bangumi: WeekCalendar }) {
         >
           <Fade in={isLoaded}>
             <Image
-              src={`./bangumi/cover/${bangumi.cover}`}
+              // TODO 路径之后会改
+              src={bangumi.cover}
               width="180px"
               height="250px"
               objectFit="cover"
@@ -53,8 +54,8 @@ function CalendarPanel({ bangumi }: { bangumi: WeekCalendar }) {
 export default function Calendar() {
   const { data } = useCalendar();
 
-  const tabListItems = useMemo(() => Object.keys(data?.data ?? []), [data]);
-  const tabPanelsItems = useMemo(() => Object.entries(data?.data ?? []), [data]);
+  const tabListItems = useMemo(() => Object.keys(data ?? []), [data]);
+  const tabPanelsItems = useMemo(() => Object.entries(data ?? []), [data]);
 
   if (tabListItems.length === 0 || tabPanelsItems.length === 0) return <FallbackCalendar />;
 

@@ -1,25 +1,10 @@
 export interface WeekCalendar {
-  status?: number;
-  episode?: number;
-  id: number;
-  name: string;
-  subtitle_group: {
-    name: string;
-    id: string;
-  }[];
-  keyword: string;
-  update_time: string;
+  id: string;
   cover: string;
+  name: string;
+  update_day: string;
+  status: boolean;
+  episode: null | number;
 }
 
-export type CalendarData = Record<'sun' | 'fri' | 'sat' | 'wed' | 'mon' | 'thu' | 'tue' | 'unknown', WeekCalendar[]>;
-
-export interface Calendar {
-  version: string;
-  latest_version: string;
-  frontend_version: string;
-  status: string;
-  lang: string;
-  danmaku_api: string;
-  data: CalendarData;
-}
+export type Calendar = Record<'sun' | 'fri' | 'sat' | 'wed' | 'mon' | 'thu' | 'tue' | 'unknown', WeekCalendar[]>;
