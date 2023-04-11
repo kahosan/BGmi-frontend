@@ -8,8 +8,7 @@ import type { Calendar } from '~/types/calendar';
 export function useCalendar() {
   const toast = useToast();
 
-  // TODO 之后改路径
-  return useSWR<Calendar>(['/api/ssd/calendar'], fetcher, {
+  return useSWR<Calendar>(['/api/calendar'], fetcher, {
     onError(err) {
       console.error(err);
       toast({

@@ -8,13 +8,15 @@ export const useAuth = () => {
       controller.abort();
     }, 3000);
 
+    const headers = new Headers({ authorization: `Bearer ${authToken}` });
+
     const options: RequestInit = {
+      headers,
       signal: controller.signal,
       method: 'POST',
-      body: JSON.stringify({ token: authToken }),
     };
 
-    return { timeoutId, response: await fetch('./api/auth', options) };
+    return { timeoutId, response: await fetch('./api/admin/auth', options) };
   };
 
   return {

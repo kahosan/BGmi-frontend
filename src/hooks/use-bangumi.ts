@@ -15,7 +15,7 @@ export const useBangumi = () => {
     };
   };
 
-  return useSWRImmutable<BangumiResponse>(['/api/index', '/api/old'], multipleFetcher, {
+  return useSWRImmutable<BangumiResponse>(['/api/index/index', '/api/index/old'], multipleFetcher, {
     onError(err) {
       console.error(err);
       toast({
